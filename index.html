@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Job Finder - Find Your Dream Job</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Job Finder</h1>
+            <p>Discover your next career opportunity</p>
+        </header>
+
+        <!-- Search Form -->
+        <section class="search-section">
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="query">Job Title or Keywords</label>
+                    <input type="text" id="query" placeholder="e.g., Software Developer" />
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g., Chicago, IL" />
+                </div>
+
+                <div class="form-group">
+                    <label for="datePosted">Date Posted</label>
+                    <select id="datePosted">
+                        <option value="all">Any time</option>
+                        <option value="today">Today</option>
+                        <option value="3days">Last 3 days</option>
+                        <option value="week">Last week</option>
+                        <option value="month">Last month</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-btn" id="searchBtn">Search Jobs</button>
+            </form>
+        </section>
+
+        <!-- Advanced Filters -->
+        <section class="filters" id="filtersSection" style="display: none;">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="employmentType">Employment Type</label>
+                    <select id="employmentType">
+                        <option value="">All Types</option>
+                        <option value="FULLTIME">Full-time</option>
+                        <option value="PARTTIME">Part-time</option>
+                        <option value="CONTRACTOR">Contract</option>
+                        <option value="INTERN">Internship</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="remoteJobs">Remote Work</label>
+                    <select id="remoteJobs">
+                        <option value="">All Jobs</option>
+                        <option value="true">Remote Only</option>
+                        <option value="false">On-site Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="companyFilter">Company</label>
+                    <input type="text" id="companyFilter" placeholder="Filter by company" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Header -->
+        <section class="results-header" id="resultsHeader" style="display: none;">
+            <div class="job-count" id="jobCount">Found 0 jobs</div>
+            <select class="sort-select" id="sortSelect">
+                <option value="relevance">Sort by Relevance</option>
+                <option value="date">Sort by Date</option>
+                <option value="company">Sort by Company</option>
+            </select>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loadingIndicator" class="loading" style="display: none;">
+            Searching for jobs...
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <!-- Job Results -->
+        <section id="jobsGrid" class="jobs-grid"></section>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
