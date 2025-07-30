@@ -1,14 +1,30 @@
 class JobSearchApp {
     constructor() {
-        this.apiKey = '576b7ad0d6mshe043709676f6c7ep1bd3d9jsn34d5e6ecf45a';
-        this.baseUrl = 'https://jsearch.p.rapidapi.com/search';
+        this.apiKey = '';
+        this.baseUrl = '';
         this.jobs = [];
         this.filteredJobs = [];
         this.currentPage = 1;
         this.jobsPerPage = 10;
 
-        this.initializeEventListeners();
-        this.loadDefaultJobs(); // Load default jobs using API
+        // Load env.json first, then init app
+        this.loadEnv().then(() => {
+            this.initializeEventListeners();
+            this.loadDefaultJobs();
+        });
+    }
+
+    // Load env.json values
+    async loadEnv() {
+        try {
+            const response = await fetch('env.json'); // path must be correct
+            const env = await response.json();
+            this.apiKey = env.API_KEY;
+            this.baseUrl = env.BASE_URL;
+        } catch (err) {
+            console.error('Error loading env.json:', err);
+            this.showError('Unable to load API configuration');
+        }
     }
 
     initializeEventListeners() {
@@ -127,7 +143,7 @@ class JobSearchApp {
                 case 'company':
                     return a.employer_name.localeCompare(b.employer_name);
                 default:
-                    return 0; // Keep original order for relevance
+                    return 0;
             }
         });
 
@@ -148,7 +164,6 @@ class JobSearchApp {
         resultsHeader.style.display = 'flex';
         jobCount.textContent = `Found ${this.filteredJobs.length} job${this.filteredJobs.length !== 1 ? 's' : ''}`;
 
-        // Pagination
         const startIndex = (this.currentPage - 1) * this.jobsPerPage;
         const endIndex = startIndex + this.jobsPerPage;
         const jobsToShow = this.filteredJobs.slice(startIndex, endIndex);
@@ -223,13 +238,11 @@ class JobSearchApp {
         pagination.style.display = 'flex';
         let paginationHTML = '';
 
-        // Previous button
         paginationHTML += `
             <button class="page-btn" ${this.currentPage === 1 ? 'disabled' : ''} 
                     onclick="jobApp.goToPage(${this.currentPage - 1})">← Previous</button>
         `;
 
-        // Page numbers
         for (let i = 1; i <= totalPages; i++) {
             if (i === this.currentPage || i === 1 || i === totalPages || 
                 (i >= this.currentPage - 1 && i <= this.currentPage + 1)) {
@@ -242,7 +255,6 @@ class JobSearchApp {
             }
         }
 
-        // Next button
         paginationHTML += `
             <button class="page-btn" ${this.currentPage === totalPages ? 'disabled' : ''} 
                     onclick="jobApp.goToPage(${this.currentPage + 1})">Next →</button>
@@ -281,5 +293,5 @@ class JobSearchApp {
     }
 }
 
-// Initialize the app
+// Initialize
 const jobApp = new JobSearchApp();
