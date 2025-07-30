@@ -1,4 +1,3 @@
-
 class JobSearchApp {
     constructor() {
         this.apiKey = '576b7ad0d6mshe043709676f6c7ep1bd3d9jsn34d5e6ecf45a';
@@ -7,9 +6,9 @@ class JobSearchApp {
         this.filteredJobs = [];
         this.currentPage = 1;
         this.jobsPerPage = 10;
-        
+
         this.initializeEventListeners();
-        this.loadSampleData(); // Load sample data initially
+        this.loadDefaultJobs(); // Load default jobs using API
     }
 
     initializeEventListeners() {
@@ -23,6 +22,39 @@ class JobSearchApp {
         document.getElementById('remoteJobs').addEventListener('change', () => this.applyFilters());
         document.getElementById('companyFilter').addEventListener('input', () => this.applyFilters());
         document.getElementById('sortSelect').addEventListener('change', () => this.sortJobs());
+    }
+
+    async loadDefaultJobs() {
+        this.showLoading(true);
+        this.hideError();
+
+        try {
+            const url = `${this.baseUrl}?query=developer&page=1&num_pages=1&country=us`;
+            const options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': this.apiKey,
+                    'x-rapidapi-host': 'jsearch.p.rapidapi.com'
+                }
+            };
+
+            const response = await fetch(url, options);
+            const data = await response.json();
+
+            if (data.status === 'OK' && data.data) {
+                this.jobs = data.data;
+                this.filteredJobs = [...this.jobs];
+                this.displayJobs();
+                this.showFilters();
+            } else {
+                this.showError('No jobs available at the moment.');
+            }
+        } catch (error) {
+            console.error('Default jobs load error:', error);
+            this.showError('Unable to load jobs at this time.');
+        } finally {
+            this.showLoading(false);
+        }
     }
 
     async searchJobs() {
@@ -128,7 +160,6 @@ class JobSearchApp {
     createJobCard(job) {
         const salary = this.formatSalary(job);
         const qualifications = job.job_highlights?.Qualifications?.slice(0, 3) || [];
-        const responsibilities = job.job_highlights?.Responsibilities?.slice(0, 2) || [];
         
         return `
             <div class="job-card">
@@ -166,7 +197,6 @@ class JobSearchApp {
 
                 <div class="job-actions">
                     <a href="${job.job_apply_link}" target="_blank" class="apply-btn">Apply Now</a>
-                    <button class="details-btn" onclick="this.showJobDetails('${job.job_id}')">View Details</button>
                 </div>
             </div>
         `;
@@ -227,13 +257,6 @@ class JobSearchApp {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    showJobDetails(jobId) {
-        const job = this.jobs.find(j => j.job_id === jobId);
-        if (job) {
-            alert(`Job Details for: ${job.job_title}\n\nCompany: ${job.employer_name}\nLocation: ${job.job_location}\n\n${job.job_description?.substring(0, 300)}...`);
-        }
-    }
-
     showFilters() {
         document.getElementById('filtersSection').style.display = 'block';
     }
@@ -260,8 +283,3 @@ class JobSearchApp {
 
 // Initialize the app
 const jobApp = new JobSearchApp();
-
-// Make showJobDetails available globally
-window.showJobDetails = (jobId) => {
-    jobApp.showJobDetails(jobId);
-};
