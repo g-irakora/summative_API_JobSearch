@@ -19,8 +19,8 @@ class JobSearchApp {
         try {
             const response = await fetch('env.json'); // path must be correct
             const env = await response.json();
-            this.apiKey = env.API_KEY;
-            this.baseUrl = env.BASE_URL;
+            this.apiKey = "576b7ad0d6mshe043709676f6c7ep1bd3d9jsn34d5e6ecf45a";
+            this.baseUrl = "https://jsearch.p.rapidapi.com/search";
         } catch (err) {
             console.error('Error loading env.json:', err);
             this.showError('Unable to load API configuration');
@@ -93,7 +93,7 @@ class JobSearchApp {
             const options = {
                 method: 'GET',
                 headers: {
-                    'x-rapidapi-key': this.apiKey,
+                    'x-rapidapi-key': "576b7ad0d6mshe043709676f6c7ep1bd3d9jsn34d5e6ecf45a",
                     'x-rapidapi-host': 'jsearch.p.rapidapi.com'
                 }
             };
